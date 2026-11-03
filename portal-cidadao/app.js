@@ -344,7 +344,7 @@
       return;
     }
     state.client = window.supabase.createClient(url, key, {
-      auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true, flowType: 'pkce' },
+      auth: { storageKey: 'prospace-cidadao-auth', autoRefreshToken: true, persistSession: true, detectSessionInUrl: true, flowType: 'pkce' },
     });
 
     state.client.auth.onAuthStateChange((event, session) => {
