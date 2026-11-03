@@ -1,37 +1,47 @@
 # ProSpace Health — ambiente de testes online
 
-O repositório contém dois portais estáticos independentes que compartilham o mesmo Supabase:
+Este repositório publica dois portais estáticos independentes que compartilham o mesmo projeto Supabase:
 
 - `portal-cidadao/` — Portal Web do Cidadão.
-- `gestao/` — Portal de Gestão para `admin` e `health_worker`.
+- `gestao/` — Portal de Gestão para perfis `admin` e `health_worker`.
 
-## Publicação automática com GitHub Pages
+## Habilitação inicial do GitHub Pages (necessária uma única vez)
 
-O workflow `.github/workflows/deploy-pages.yml` publica os arquivos a cada push na branch `main` e também pode ser executado manualmente em **Actions**.
+1. Abra **Settings** deste repositório.
+2. No menu lateral, abra **Pages**.
+3. Em **Build and deployment → Source**, selecione **GitHub Actions**.
+4. Salve, se o GitHub solicitar.
 
-1. Crie um repositório público vazio chamado `prospace-health-testes` na conta GitHub que será dona do projeto. Não adicione README, licença nem `.gitignore` inicial.
-2. Extraia o ZIP deste pacote e envie **o conteúdo da pasta `ProSpace_Online_Testes`** para a raiz do repositório, mantendo `.github`, `portal-cidadao` e `gestao` (ative a exibição de arquivos ocultos para não perder `.github` e `.nojekyll`).
-3. Faça commit na branch `main`.
-4. Abra a aba **Actions** do repositório e confira o workflow `Publicar ProSpace Health (teste)`. Aguarde ficar verde.
-5. A URL base será `https://matheushsb23.github.io/prospace-health-testes/` e os portais ficarão em `/portal-cidadao/` e `/gestao/`.
+O workflow `.github/workflows/deploy-pages.yml` já está no repositório e executa automaticamente a publicação a cada atualização da branch `main`.
 
-Se o workflow não iniciar, abra **Settings → Actions → General** e habilite permissões de leitura e escrita para GitHub Actions; depois execute novamente o workflow.
+Depois de habilitar Pages, abra **Actions → Publicar ProSpace Health (teste)** e escolha **Run workflow** para executar imediatamente. Aguarde a execução ficar verde.
+
+## Endereços depois da publicação
+
+- Página inicial: `https://matheushsb23.github.io/prospace-health-testes/`
+- Portal do Cidadão: `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/`
+- Portal de Gestão: `https://matheushsb23.github.io/prospace-health-testes/gestao/`
+
+Os links só estarão ativos quando o workflow terminar com sucesso.
 
 ## Supabase Auth
 
-Depois da publicação, em **Supabase → Authentication → URL Configuration**:
+Depois da publicação, abra **Supabase → Authentication → URL Configuration**:
 
-- `Site URL`: URL do Portal do Cidadão, incluindo `/portal-cidadao/`.
-- `Redirect URLs`: adicione `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/**` e `https://matheushsb23.github.io/prospace-health-testes/gestao/**`.
-- Mantenha também os endereços `localhost` usados no desenvolvimento, se ainda forem necessários.
+- Defina `Site URL` como `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/`.
+- Em `Redirect URLs`, adicione `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/**`.
+- Adicione também `https://matheushsb23.github.io/prospace-health-testes/gestao/**`.
+- Preserve os endereços localhost que ainda utiliza no desenvolvimento.
 
-Os portais usam `location.origin + location.pathname` como destino de confirmação/recuperação; por isso os dois caminhos precisam estar autorizados.
+Os portais direcionam confirmação e recuperação para o endereço atual; por isso, os dois caminhos devem estar autorizados.
 
 ## Segurança
 
-- Este pacote contém apenas arquivos públicos de frontend, logos e configuração com chave pública Supabase (`publishable`/`anon`). Não contém SQL, seeds, senha, `service_role` nem `sb_secret_`.
-- O repositório será público: qualquer pessoa poderá ler o código HTML, CSS e JavaScript. A chave publishable é pública por definição; os dados devem continuar protegidos por RLS e RPCs no Supabase.
-- A Gestão verifica o perfil do usuário e só aceita `admin` e `health_worker`; o Portal do Cidadão recusa esses perfis e exige `citizen`.
-- `noindex` e `robots.txt` ajudam a evitar indexação, mas não são uma barreira de segurança.
-- Use somente dados e contas fictícias. Não cadastre dados reais de saúde nesse ambiente público de testes.
-- Antes de uso real, revise RLS, RPCs, Storage, logs, backups e conformidade com LGPD com profissional qualificado.
+- O repositório é público: qualquer pessoa poderá ler HTML, CSS e JavaScript.
+- O pacote usa somente a chave pública Supabase (`publishable`); nunca coloque `service_role`, `sb_secret_`, senhas ou tokens privados no frontend.
+- A chave publishable é pública por definição. Os dados precisam continuar protegidos por RLS, RPCs e políticas de Storage no Supabase.
+- A Gestão verifica perfil e aceita apenas `admin` e `health_worker`; o Portal do Cidadão exige `citizen`.
+- Não publique scripts SQL, seeds, exportações, backups ou dados pessoais neste repositório.
+- Use exclusivamente contas e dados fictícios. Não utilize dados reais de saúde no ambiente público de testes.
+- `noindex` e `robots.txt` não substituem autenticação nem políticas de segurança.
+- Antes de qualquer uso oficial, faça auditoria de RLS, RPCs, Storage, logs, backups e conformidade com LGPD.
