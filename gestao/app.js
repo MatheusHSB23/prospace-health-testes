@@ -204,7 +204,7 @@
     }
     try {
       state.db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        auth: { storageKey: 'prospace-gestao-auth', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
       });
       bindStaticEvents();
       const { data: { session }, error } = await state.db.auth.getSession();
