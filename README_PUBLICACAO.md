@@ -1,63 +1,46 @@
 # ProSpace Health — publicação online para testes
 
-Este pacote contém **dois sites estáticos independentes** que usam o mesmo projeto Supabase:
+Este repositório contém dois portais estáticos independentes que usam o mesmo projeto Supabase:
 
 - `portal-cidadao/`: Portal Web do Cidadão.
-- `gestao/`: Portal de Gestão, com autenticação para `admin` e `health_worker`.
+- `gestao/`: Portal de Gestão para perfis `admin` e `health_worker`.
 
-Os arquivos foram preparados para Vercel. Não há etapa de build, Node, Flutter ou Android Studio.
+## Habilitar a primeira publicação
 
-## Publicar os dois sites no Vercel com um único repositório GitHub
+O workflow de publicação já foi adicionado ao repositório em `.github/workflows/deploy-pages.yml`.
 
-1. Extraia este ZIP.
-2. No GitHub, crie um repositório **privado** chamado `prospace-health-online-testes`.
-3. Envie para o repositório as duas pastas (`portal-cidadao` e `gestao`) preservando os nomes e os arquivos internos.
-4. No Vercel, escolha **Add New → Project** e importe esse mesmo repositório.
-5. Crie o primeiro projeto com:
-   - Project Name: `prospace-cidadao` (ou outro nome disponível).
-   - Framework Preset: `Other`.
-   - Root Directory: `portal-cidadao`.
-   - Build Command: deixe vazio / sem build.
-   - Output Directory: `.` (raiz do projeto selecionado).
-6. Crie o segundo projeto importando o mesmo repositório, com:
-   - Project Name: `prospace-gestao` (ou outro nome disponível).
-   - Framework Preset: `Other`.
-   - Root Directory: `gestao`.
-   - Build Command: deixe vazio / sem build.
-   - Output Directory: `.`.
-7. Aguarde o status `Ready` nos dois projetos. O Vercel mostrará duas URLs HTTPS distintas.
+1. Abra [Settings → Pages do repositório](https://github.com/MatheusHSB23/prospace-health-testes/settings/pages).
+2. Em **Build and deployment → Source**, selecione **GitHub Actions**.
+3. Depois acesse [Actions](https://github.com/MatheusHSB23/prospace-health-testes/actions).
+4. Abra **Publicar ProSpace Health (teste)** e clique em **Run workflow** se não iniciar automaticamente.
+5. Aguarde a execução terminar com sucesso.
 
-## Configuração de autenticação no Supabase depois de receber as URLs
+Essa configuração inicial é necessária para que o workflow possa implantar o site. O GitHub informa que a origem de publicação deve ser configurada como GitHub Actions nas configurações de Pages. Consulte a [documentação oficial](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 
-No Supabase, abra **Authentication → URL Configuration**.
+## Links após a execução bem-sucedida
 
-- Defina `Site URL` para a URL HTTPS principal do Portal do Cidadão.
-- Em `Redirect URLs`, adicione a URL exata do cidadão com `/**` no final, por exemplo `https://prospace-cidadao-SEU-SUFIXO.vercel.app/**`.
-- Adicione também a URL exata do Gestão com `/**` no final, por exemplo `https://prospace-gestao-SEU-SUFIXO.vercel.app/**`.
-- Durante desenvolvimento local, mantenha `http://localhost:7358/**` e `http://127.0.0.1:7358/**` para o cidadão; para a Gestão, `http://localhost:8090/**` e `http://127.0.0.1:8090/**`.
-- Evite liberar um wildcard genérico amplo em produção. Prefira as duas URLs finais exatas.
+- Página inicial: https://matheushsb23.github.io/prospace-health-testes/
+- Portal do Cidadão: https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/
+- Portal de Gestão: https://matheushsb23.github.io/prospace-health-testes/gestao/
 
-O Cidadão usa `location.origin` como destino para confirmação e recuperação; a Gestão usa a origem atual para recuperação de senha. Por isso, essas origens devem estar liberadas no Supabase.
+O workflow publica os dois portais no mesmo projeto Pages e atualiza o site automaticamente a cada push na branch `main`.
 
-## Segurança para ambiente de teste
+## Configurar autenticação no Supabase
 
-- Os dois sites usam a chave pública (`publishable`/`anon`) do Supabase. Essa chave aparece no navegador e **não é um segredo**.
-- Nunca adicione `service_role`, `sb_secret_` ou tokens privados ao JavaScript, HTML, CSS, `vercel.json` ou a variáveis `NEXT_PUBLIC_*`.
-- A proteção dos dados depende de RLS e das funções RPC no banco. A interface sozinha não protege registros.
-- O painel Gestão verifica o perfil e aceita apenas `admin` e `health_worker`; cidadãos devem usar o Portal do Cidadão.
-- Este pacote contém apenas arquivos de execução web. Scripts SQL, seeds demonstrativos e dados de teste foram deixados de fora.
-- `noindex` foi habilitado para evitar indexação por mecanismos de busca durante os testes; isso **não** é controle de acesso.
-- Use contas fictícias de teste e nunca coloque dados reais de pacientes em um ambiente público de teste.
+Depois que o site estiver publicado, abra **Supabase → Authentication → URL Configuration**:
 
-## Verificação depois da publicação
+- `Site URL`: `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/`
+- `Redirect URLs`: `https://matheushsb23.github.io/prospace-health-testes/portal-cidadao/**`
+- Adicione também `https://matheushsb23.github.io/prospace-health-testes/gestao/**`.
+- Preserve os endereços localhost que ainda utiliza no desenvolvimento.
 
-1. Abra a URL do Cidadão em janela anônima e confirme que aparece a tela de login/cadastro.
-2. Crie ou use uma conta `citizen` de teste e valide confirmação/recuperação de e-mail.
-3. Abra a URL da Gestão e tente entrar com a conta de cidadão: o portal deve negar o acesso.
-4. Entre na Gestão com uma conta `admin` ou `health_worker` autorizada.
-5. Teste unidades, pacientes, agenda e solicitações apenas com dados fictícios.
-6. Teste os links de confirmação e recuperação nos dois domínios.
+## Segurança para ambiente de testes
 
-## Observação
-
-A publicação online cria dois endereços públicos com HTTPS. A autenticação é obrigatória para abrir dados pessoais. Antes de qualquer uso com dados reais de saúde, faça revisão técnica das políticas RLS, RPCs, permissões de storage, logs, backups e LGPD. Este pacote é para homologação/testes, não uma certificação de produção.
+- O repositório é público e o código do frontend pode ser lido por qualquer pessoa.
+- Os portais usam somente a chave pública Supabase (`publishable`/anon), que foi feita para estar no navegador. Nunca coloque `service_role`, `sb_secret_`, senhas ou tokens privados no frontend.
+- A proteção real dos dados depende de RLS e RPCs no Supabase.
+- A Gestão verifica o perfil e aceita apenas `admin` e `health_worker`; cidadãos devem usar o Portal do Cidadão.
+- Não adicione ao repositório scripts SQL de demonstração, dumps, backups ou dados pessoais.
+- Use exclusivamente contas e dados fictícios; não utilize dados reais de saúde neste ambiente.
+- `noindex` e `robots.txt` não constituem controle de acesso.
+- Antes de qualquer uso oficial, faça uma revisão de RLS, RPCs, Storage, logs, backups e LGPD.
