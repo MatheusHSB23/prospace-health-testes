@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b48">
+  <meta name="description" content="Painel de gestão do ProSpace Health para unidades de saúde.">
+  <title>ProSpace Health | Gestão</title>
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="styles.css?v=20261103-icon-system">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script defer src="app.js?v=20261103-icon-system"></script>
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-art">
+      <div class="brand brand-light">
+        <img class="brand-app-icon" src="assets/prospace-app-icon.png" alt="Logo ProSpace Health">
+        <div><strong>ProSpace</strong><small>HEALTH • GESTÃO</small></div>
+      </div>
+      <div class="login-copy">
+        <span class="eyebrow">GESTÃO DA REDE DE SAÚDE</span>
+        <h1>Organização e cuidado em um só lugar.</h1>
+        <p>Gerencie cadastros, atendimentos, campanhas e equipes das unidades de saúde com acesso controlado.</p>
+      </div>
+      <div class="login-art-footer">Plataforma de gestão • ProSpace Health</div>
+    </div>
+    <div class="login-panel">
+      <div class="login-form-wrap">
+        <div class="brand brand-dark mobile-brand">
+          <img class="brand-app-icon" src="assets/prospace-app-icon.png" alt="Logo ProSpace Health">
+          <div><strong>ProSpace</strong><small>HEALTH • GESTÃO</small></div>
+        </div>
+        <span class="eyebrow">ACESSO RESTRITO</span>
+        <h2>Entrar no painel</h2>
+        <p class="muted">Use sua conta autorizada pela administração da rede.</p>
+        <form id="login-form" class="form-stack">
+          <label>E-mail<input name="email" type="email" autocomplete="username" placeholder="seu.email@unidade.gov.br" required></label>
+          <label>Senha<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" minlength="8" required></label>
+          <button class="btn btn-primary btn-wide" type="submit"><span>Entrar na gestão</span><span data-icon="arrowRight" data-icon-class="button-icon"></span></button>
+        </form>
+        <button id="forgot-password" class="text-button" type="button">Esqueci minha senha</button>
+        <div id="login-message" class="inline-message" aria-live="polite"></div>
+        <p class="security-note"><span class="secure-dot"></span> Acesso protegido por autenticação e permissões por unidade.</p>
+        <p class="login-help">Ainda não tem uma conta? Crie primeiro uma conta no aplicativo do cidadão e solicite ao administrador a liberação de acesso como atendente.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-shell" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand brand brand-light">
+        <img class="brand-app-icon" src="assets/prospace-app-icon.png" alt="Logo ProSpace Health">
+        <div><strong>ProSpace</strong><small>HEALTH • GESTÃO</small></div>
+      </div>
+      <div class="sidebar-section-label">MENU PRINCIPAL</div>
+      <nav id="main-nav" class="main-nav" aria-label="Navegação principal">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon" data-icon="dashboard"></span><span>Visão geral</span></button>
+        <button class="nav-item" data-page="patients"><span class="nav-icon" data-icon="patients"></span><span>Pacientes</span></button>
+        <button class="nav-item" data-page="appointments"><span class="nav-icon" data-icon="appointments"></span><span>Atendimentos</span></button>
+        <button class="nav-item" data-page="requests"><span class="nav-icon" data-icon="requests"></span><span>Solicitações</span><span class="nav-count" id="request-nav-count"></span></button>
+        <button class="nav-item" data-page="campaigns"><span class="nav-icon" data-icon="campaigns"></span><span>Campanhas</span></button>
+        <button class="nav-item" data-page="schedule"><span class="nav-icon" data-icon="schedule"></span><span>Agenda e horários</span></button>
+        <div class="nav-divider"></div>
+        <div class="sidebar-section-label">OPERAÇÃO DA UNIDADE</div>
+        <button class="nav-item" data-page="records"><span class="nav-icon" data-icon="records"></span><span>Registros de saúde</span></button>
+        <button class="nav-item" data-page="notifications"><span class="nav-icon" data-icon="notifications"></span><span>Comunicados</span></button>
+        <button class="nav-item" data-page="reports"><span class="nav-icon" data-icon="reports"></span><span>Relatórios</span></button>
+        <div id="admin-nav" class="admin-nav">
+          <div class="nav-divider"></div>
+          <div class="sidebar-section-label">ADMINISTRAÇÃO DA REDE</div>
+          <button class="nav-item" data-page="units"><span class="nav-icon" data-icon="units"></span><span>Unidades</span></button>
+          <button class="nav-item" data-page="services"><span class="nav-icon" data-icon="services"></span><span>Serviços</span></button>
+          <button class="nav-item" data-page="team"><span class="nav-icon" data-icon="team"></span><span>Equipe e acessos</span></button>
+          <button class="nav-item" data-page="audit"><span class="nav-icon" data-icon="audit"></span><span>Auditoria</span></button>
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="support-card"><span class="support-icon" data-icon="help"></span><div><strong>Precisa de ajuda?</strong><small>Consulte o guia de operação.</small></div></div>
+        <div class="sidebar-user"><div class="avatar" id="sidebar-avatar">PH</div><div class="sidebar-user-info"><strong id="sidebar-name">Usuário</strong><small id="sidebar-role">Atendente</small></div><button id="logout-button" class="icon-button logout-button" title="Sair" aria-label="Sair" data-icon="logout"></button></div>
+      </div>
+    </aside>
+    <button id="sidebar-overlay" class="sidebar-overlay" type="button" aria-label="Fechar menu" tabindex="-1"></button>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobile-menu" class="icon-button mobile-menu" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false" data-icon="menu"></button>
+          <div><div class="breadcrumb">ProSpace Health <span>/</span> <strong id="breadcrumb-page">Visão geral</strong></div><div class="page-date" id="today-label"></div></div>
+        </div>
+        <div class="topbar-actions">
+          <label class="unit-picker"><span>Unidade</span><select id="unit-filter" aria-label="Selecionar unidade"><option value="all">Todas as unidades</option></select></label>
+          <div class="topbar-user"><div class="avatar avatar-small" id="top-avatar">PH</div><div><strong id="top-name">Usuário</strong><small id="top-role">Atendente</small></div></div>
+        </div>
+      </header>
+      <section id="page-view" class="page-view" aria-live="polite">
+        <div class="loading-panel"><div class="spinner"></div><p>Carregando painel...</p></div>
+      </section>
+      <footer class="app-footer"><span>ProSpace Health • Gestão de unidades</span><span>Ambiente administrativo · acesso restrito</span></footer>
+    </main>
+  </div>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+</body>
+</html>
